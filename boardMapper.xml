@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.mappers.board">
+	
+	<!-- 게시물 목록 -->
+	<select id="list" resultType="com.board.domain.BoardVO" parameterType="com.board.domain.SearchCriteria">
+		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
+        (SELECT * FROM test ORDER BY no ASC) A, 
+        (SELECT @ROWNUM := 0 )b
+	 
+		  <if test="searchType=='title' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='content' and keyword != null and keyword !=''">
+		  WHERE content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='title_content' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%') 
+		   or content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='writer' and keyword != null and keyword !=''">
+		  WHERE writer LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		  ORDER BY ROWNUM DESC
+		  limit #{displayPost}, #{postNum}
+	</select>
+	
+	<!-- 게시물 작성  -->
+    <insert id="write" parameterType="com.board.domain.BoardVO">
+ 		insert into test(title, content, writer,password)
+   			values(#{title}, #{content}, #{writer}, #{password})
+    </insert>
+    
+    <!-- 게시물 조회 -->
+    <select id="view" parameterType="int" resultType="com.board.domain.BoardVO">
+    	select no, title, content, writer, regDate, password 
+    	from test 
+    	where no = #{no}
+    </select>
+    
+	<!-- 게시물 수정 -->
+	<update id="modify" parameterType="com.board.domain.BoardVO" >
+		 update test
+		  set
+		   title = #{title},
+		   content = #{content},
+		   writer = #{writer},
+		   password = #{password}
+		   
+		  where no = #{no}
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete" parameterType="int">
+		 delete from test
+		 where no = #{no}
+		 
+	</delete>
+	<!-- 게시물 총 갯수 -->
+	<select id="count" resultType="int">
+		select count(no) from test  
+	  
+	 <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+	</select>
+	
+	<!-- 게시물 목록 + 페이징 
+	<select id="listPage" parameterType="hashMap" resultType="com.board.domain.BoardVO">
+	 select
+	  no, title, writer, regDate
+	 from test
+	 order by no desc
+	  limit #{displayPost}, #{postNum}
+	</select>-->
+	
+	 <!--게시물 목록 + 페이징 + 검색 -->
+	<!--<select id="listPageSearch" parameterType="hashMap" resultType="com.board.domain.BoardVO">
+		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
+        (SELECT * FROM test ORDER BY no ASC) A, 
+        (SELECT @ROWNUM := 0 )b
+	 
+	  <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	  ORDER BY ROWNUM DESC
+	  limit #{displayPost}, #{postNum}
+	</select>-->
+	
+	<!-- 게시물 총 갯수 + 검색 적용 
+	<select id="searchCount" parameterType="hashMap" resultType="int">
+	 select count(no) from test  
+	  
+	 <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+ 
+</select>	-->
+</mapper>
