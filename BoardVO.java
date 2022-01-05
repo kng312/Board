@@ -12,8 +12,46 @@ public class BoardVO {
 	private String writer;
 	private Date regDate;
 	private String password;
+	private int bid;
+	private int ordered;
+	private int layer;
+	
+	private int reply_count;
+	private int replyDeleteC;
 	
 	
+	
+	
+	public int getReplyDeleteC() {
+		return replyDeleteC;
+	}
+	public void setReplyDeleteC(int replyDeleteC) {
+		this.replyDeleteC = replyDeleteC;
+	}
+	public int getReply_count() {
+		return reply_count;
+	}
+	public void setReply_count(int reply_count) {
+		this.reply_count = reply_count;
+	}
+	public int getBid() {
+		return bid;
+	}
+	public void setBid(int bid) {
+		this.bid = bid;
+	}
+	public int getOrdered() {
+		return ordered;
+	}
+	public void setOrdered(int ordered) {
+		this.ordered = ordered;
+	}
+	public int getLayer() {
+		return layer;
+	}
+	public void setLayer(int layer) {
+		this.layer = layer;
+	}
 	public int getNo() {
 		return no;
 	}
@@ -57,6 +95,17 @@ public class BoardVO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	@Override
+	public String toString() {
+		return "BoardVO [rownum=" + rownum + ", no=" + no + ", title=" + title + ", content=" + content + ", writer="
+				+ writer + ", regDate=" + regDate + ", password=" + password + ", bid=" + bid + ", ordered=" + ordered
+				+ ", layer=" + layer + ", reply_count=" + reply_count + ", replyDeleteC=" + replyDeleteC + "]";
+	}
+
+	
+
+	
+	
 
 
 	
