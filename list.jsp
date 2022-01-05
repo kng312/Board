@@ -14,10 +14,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <style>
-	.current{
-		background-color: black;
-		
-	}
+
 </style>
 
 
@@ -27,21 +24,29 @@
 				<table class="table table-hover text-center">
 					<thead>
 						<tr >
-							<th scope="col" class="text-center"> 번호</th>
-							<th scope="col" class="text-center"> 제목</th>
-							<th scope="col" class="text-center"> 작성일</th>
-							<th scope="col" class="text-center"> 작성자</th>
+							<th scope="col" class="col-md-1 text-center"> 번호</th>
+							<th scope="col" class="col-md-5 text-center"> 제목</th>
+							<th scope="col" class="col-md-2 text-center"> 작성일</th>
+							<th scope="col" class="col-md-2 text-center"> 작성자</th>
 						</tr>
 					</thead>
 					<c:forEach items="${list}" var="list">
 						<tr>
 							<td><c:out value="${list.rownum}" /></td>
-							<td style="text-align: left;">
+							<td style="text-align: left;" style="cursor: pointer;">
 								<a href="/board/view?no=${list.no}&
+													bid=${list.bid}&
+													ordered=${list.ordered}&
+													layer=${list.layer}&
 													num=${scri.num}&
 													postNum=${scri.postNum}&
 													searchType=${scri.searchType}&
-													keyword=${scri.keyword}" ><c:out value="${list.title}"/> </a>
+													keyword=${scri.keyword}" >
+													<c:forEach begin="1" end="${list.layer}">&nbsp;&nbsp;&nbsp;</c:forEach>
+													<c:if test="${list.layer > 0}"><img src="/resources/image/reply.gif"></c:if>
+													
+													<c:out value="${list.title}"/>
+													[&nbsp;<c:out value="${list.reply_count}"/>&nbsp;] </a>
 							</td>
 							<td>
 								<fmt:formatDate value="${list.regDate}" pattern="yyyy-MM-dd" />
@@ -51,11 +56,11 @@
 					</c:forEach>
 				</table>
 	
-			<input type="button" class="btn btn-secondary pull-right" value="게시물 목록" onclick="location.href='/board/list/'"/>
-			<input type="button" class="btn btn-secondary pull-right" value="게시물 작성" onclick="location.href='/board/write/'" />
+			<input type="button" class="btn btn-secondary" value="게시물 목록" onclick="location.href='/board/list/'"/>
+			<input type="button" class="btn btn-secondary" value="게시물 작성" onclick="location.href='/board/write/'" />
 					
-		<div id="search" class="search row">
-			<div  class="col-xs-2 col-sm-2">
+		<div id="search" class="row float-right">
+			<div  class="">
 				<select name="searchType" class="form-control">
 					<option value="title" <c:if test="${scri.searchType eq 'title'}">selected</c:if>>제목</option>
 					<option value="content" <c:if test="${scri.searchType eq 'content'}">selected</c:if>>내용</option>
@@ -63,11 +68,11 @@
 					<option value="writer" <c:if test="${scri.searchType eq 'writer'}">selected</c:if>>작성자</option>
 				</select>
 			</div>
-			<div class="col-xs-10 col-sm-10">
+			<div class="">
 				<div class="input-group">
 					<input type="text" class="form-control" id="keywordInput" name="keyword" value="${scri.keyword}" />
 					<span class="input-group-btn">
-						<input type="button" class="btn btn-secondary pull-right" id="searchBtn" value="검색" />
+						<input type="button" class="btn btn-secondary"  id="searchBtn" value="검색" />
 					</span>
 				</div>
 			</div>
@@ -84,9 +89,9 @@
 					 	이전 </a></li> 
 				</c:if>
 					
-				<c:forEach begin="${page.startPageNum}" end="${page.endPageNum}" var="num">
-						<li class="page-item ${cri.num == num ? 'current' : ''}">
-						<a class="page-link" href="${page.makeSearch(num)}">${num}</a></li> 
+				<c:forEach begin="${page.startPageNum}" end="${page.endPageNum}" var="idx">
+						<li class="page-item <c:out value="${page.cri.num == idx ? 'active' :''}" />">
+						<a class="page-link" href="${page.makeSearch(idx)}">${idx}</a></li> 
 				</c:forEach>
 				<c:if test="${page.next}">
 					<li class="page-item"> <a class="page-link" href="${page.makeSearch(page.endPageNum + 1)}">

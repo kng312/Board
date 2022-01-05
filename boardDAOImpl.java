@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
 import com.board.domain.Page;
+import com.board.domain.ReplyVO;
 import com.board.domain.SearchCriteria;
 
 @Repository
@@ -31,9 +32,9 @@ public class boardDAOImpl implements boardDAO{
 	
 	//작성
 	@Override
-	public void write(BoardVO vo) throws Exception {
+	public int write(BoardVO vo) throws Exception {
 		
-		sql.insert(namespace + ".write", vo);
+		return sql.insert(namespace + ".write", vo);
 		
 	}
 
@@ -61,6 +62,29 @@ public class boardDAOImpl implements boardDAO{
 	@Override
 	public int count(SearchCriteria scri) throws Exception {
 	 return sql.selectOne(namespace + ".count", scri); 
+	}
+
+
+	@Override
+	public void replyShape(BoardVO vo) {
+		sql.update(namespace + ".replyShape", vo);
+		
+	}
+
+	@Override
+	public int replyWrite(BoardVO vo) {
+		return sql.insert(namespace+".replyWrite", vo);
+	}
+	
+	@Override
+	public void replyCount(int no) throws Exception {
+		sql.update(namespace + ".updateReplyCount", no);
+	}
+
+	@Override
+	public int replyDeleteC(int no) throws Exception {
+		return sql.selectOne(namespace +".replyDeleteC" , no);
+		
 	}
 	
 	// 게시물 목록 + 페이징
@@ -101,6 +125,18 @@ public class boardDAOImpl implements boardDAO{
 	  
 	  return sql.selectOne(namespace + ".searchCount", data); 
 	 }*/
+	
+	//댓글 추가
+//	public boolean addReply (ReplyVO rvo) throws Exception{
+//		
+//		return sql.selectOne(namespace + ".addReply" + rvo);
+//	}
+//	
+//	//댓글 가져오기
+//	public List<ReplyVO> getReply(int boardIdx) throws Exception {
+//		
+//		return sql.selectList(namespace + ".getReply" + boardIdx);
+//	}
 	
 
 }

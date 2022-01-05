@@ -11,6 +11,7 @@ import com.board.dao.boardDAO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
 import com.board.domain.Page;
+import com.board.domain.ReplyVO;
 import com.board.domain.SearchCriteria;
 
 @Service
@@ -24,10 +25,17 @@ public class boardServiceImpl implements boardService{
 	public List<BoardVO> list(SearchCriteria scri) throws Exception {
 		return dao.list(scri);
 	}
+	
 	//작성
-	public void write(BoardVO vo) throws Exception
+	public int write(BoardVO vo) throws Exception
 	{
-		dao.write(vo);
+		if(vo.getNo() == 0) {
+			return dao.write(vo);
+		}
+		else {
+			dao.replyShape(vo);
+			return dao.replyWrite(vo);
+		}
 	}
 
 	//조회
@@ -47,7 +55,7 @@ public class boardServiceImpl implements boardService{
 	//삭제
 	@Override
 	public void delete(int no) throws Exception {
-	 dao.delete(no);
+		dao.delete(no);
 	}
 	
 	// 게시물 총 갯수
@@ -55,6 +63,22 @@ public class boardServiceImpl implements boardService{
 	public int count(SearchCriteria scri) throws Exception {
 	 return dao.count(scri);
 	}
+	
+	//댓글 갯수
+	@Override
+	public void replyCount(int no) throws Exception {
+		dao.replyCount(no);
+		
+	}
+
+	@Override
+	public int replyDeleteC(int no) throws Exception {
+		return dao.replyDeleteC(no);
+		
+	}
+	
+	
+
 	
 	// 게시물 목록 + 페이징
 	
@@ -74,5 +98,17 @@ public class boardServiceImpl implements boardService{
 	public int searchCount(String searchType, String keyword) throws Exception {
 	 return dao.searchCount(searchType, keyword);
 	}*/
+	
+	//댓글 추가
+	//public boolean addReply (ReplyVO rvo) throws Exception{
+		
+		//return dao.addReply(rvo);
+	//}
+	
+	//댓글 가져오기
+	///public List<ReplyVO> getReply(int boardIdx) throws Exception {
+		
+		//return dao.getReply(boardIdx);
+	//}
 
 }
