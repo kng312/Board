@@ -61,7 +61,7 @@ public interface boardDAO {
 	public void updateFile(Map<String, Object> map) throws Exception;
 	
 	//엑셀 다운로드
-	public List<BoardVO> selectTestList(BoardVO vo, HttpServletResponse response) throws Exception;
+	public List<BoardVO> selectTestList(BoardVO vo, HttpServletResponse response, SearchCriteria scri) throws Exception;
 
 
 

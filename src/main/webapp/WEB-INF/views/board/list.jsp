@@ -25,12 +25,10 @@
 <body>
 	<div class="container-fluid">
 			<form action="/board/excelDown" method="post">
-			<c:forEach items="${list}" var="list">
 				<input type="hidden" id="num" name="num" value="${scri.num}"> 
 				<input type="hidden" id="postNum" name="postNum" value="${scri.postNum}"> 
 				<input type="hidden" id="searchType" name="searchType" value="${scri.searchType}"> 
 				<input type="hidden" id="keyword" name="keyword" value="${scri.keyword}">
-			</c:forEach>
 			   <input type="submit" value='엑셀 다운로드' class="btn btn-secondary" style="float:right;">
 			</form>
 			 

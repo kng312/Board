@@ -107,6 +107,7 @@ public class BoardController {
    	 	//이메일 보내기
 	   	 Email email = new Email();
 	     
+
 	     
 	     
 	     String subject = "게시글이 등록 되었습니다.";
@@ -321,7 +322,7 @@ public class BoardController {
 	public void excelDown(@ModelAttribute BoardVO vo, HttpServletResponse response
 	                                                    , HttpServletRequest request, RedirectAttributes rttr,SearchCriteria scri) throws Exception{
 
-	   service.excelDown(vo, response);
+	   service.excelDown(vo, response,scri);
 	   
 		rttr.addAttribute("no", vo.getNo());
 		rttr.addAttribute("num", scri.getNum());

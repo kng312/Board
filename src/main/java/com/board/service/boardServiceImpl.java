@@ -156,11 +156,11 @@ public class boardServiceImpl implements boardService{
 	//엑셀 다운로드
 	@Override
 
-	   public void excelDown(BoardVO vo, HttpServletResponse response) throws Exception {
+	   public void excelDown(BoardVO vo, HttpServletResponse response ,SearchCriteria scri ) throws Exception {
 
 	 
 
-	   List<BoardVO> testList = dao.selectTestList(vo, response);
+	   List<BoardVO> testList = dao.selectTestList(vo, response, scri);
 
 	 
 

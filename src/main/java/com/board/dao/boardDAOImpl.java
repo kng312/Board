@@ -134,7 +134,7 @@ public class boardDAOImpl implements boardDAO{
 
 	//엑셀 다운로드
 	@Override
-	public List<BoardVO> selectTestList(BoardVO vo, HttpServletResponse response) throws Exception {
+	public List<BoardVO> selectTestList(BoardVO vo, HttpServletResponse response, SearchCriteria scri) throws Exception {
 		
 		return sql.selectList(namespace +".selectTestList", vo);
 	}

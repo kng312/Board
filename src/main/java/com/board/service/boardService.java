@@ -52,7 +52,8 @@ public interface boardService {
 	public Map<String, Object> selectFileInfo(Map<String, Object> map) throws Exception;
 
 	//엑셀 다운로드
-	public void excelDown(BoardVO vo, HttpServletResponse response) throws Exception;
+	public void excelDown(BoardVO vo, HttpServletResponse response,SearchCriteria scri) throws Exception;
+
 
 	
 	
