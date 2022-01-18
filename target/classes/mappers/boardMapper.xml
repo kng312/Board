@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.mappers.board">
+	
+	<!-- 게시물 목록 -->
+	<select id="list" resultType="com.board.domain.BoardVO" parameterType="com.board.domain.SearchCriteria">
+		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
+        (SELECT * FROM test ORDER BY bid asc, ordered desc) A, 
+        (SELECT @ROWNUM := 0 )b
+	 
+		  <if test="searchType=='title' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='content' and keyword != null and keyword !=''">
+		  WHERE content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='title_content' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%') 
+		   or content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='writer' and keyword != null and keyword !=''">
+		  WHERE writer LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		  ORDER BY ROWNUM DESC
+		  limit #{displayPost}, #{postNum}
+	</select>
+	
+	<!-- 게시물 작성  -->
+    <insert id="write" parameterType="hashMap" useGeneratedKeys="true" keyProperty="no">
+ 		insert into test( bid, title, content, writer,password)
+   			values((select ifnull(max(no),0)+1 from test as temp) ,#{title}, #{content}, #{writer}, #{password})
+    </insert>
+    
+    <!-- 게시물 조회 -->
+    <select id="view" parameterType="int" resultType="com.board.domain.BoardVO">
+    	select no, title, content, writer, regDate, password , bid, ordered, layer
+    	from test 
+    	where no = #{no}
+    </select>
+    
+	<!-- 게시물 수정 -->
+	<update id="modify" parameterType="com.board.domain.BoardVO" >
+		 update test
+		  set
+		   title = #{title},
+		   content = #{content},
+		   writer = #{writer},
+		   password = #{password}
+		   
+		  where no = #{no}
+	</update>
+	
+	<!-- 답글이 있는 게시물 삭제 -->
+	<update id="deleteup" parameterType="com.board.domain.BoardVO">
+		 update test set title = "삭제된 게시물 입니다.",content="삭제된 게시물 입니다.",writer=""
+		 where no = #{no} 
+	</update>
+	
+	<!-- 답글이 없는 게시물 삭제 -->
+	<delete id="delete" parameterType="com.board.domain.BoardVO">
+		 delete from test where no = #{no}  
+	</delete>
+	
+	<!-- 답글 총 갯수 -->
+	<select id="replyDeleteC" parameterType="com.board.domain.BoardVO" resultType="int">
+		select count(*) from test where bid = #{bid} and ordered > #{ordered} 
+	</select>  
+	
+	
+	
+	
+	<!-- 게시물 총 갯수 -->
+	<select id="count" resultType="int">
+		select count(no) from test  
+	  
+	 <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+	</select>
+	
+	<!-- 답글 추가 -->
+    <update id="replyShape"> 
+    	update test set ordered = ordered+1 
+    	where bid= #{bid} and ordered > #{ordered}
+    </update>
+    
+    <!-- 답글 작성 -->
+    <insert id="replyWrite" useGeneratedKeys="true" keyProperty="no">
+    	INSERT INTO test (bid, title, content, writer,password, ordered, layer) 
+    	VALUES (#{bid} ,#{title},#{content},#{writer},#{password},(SELECT ordered FROM test AS temp WHERE no=${no})+1,(SELECT layer FROM test AS temp WHERE no=#{no})+1);
+    </insert>
+	
+	<!-- 댓글 총 갯수 -->
+	<update id="updateReplyCount" parameterType="int">
+	update test b
+	set b.reply_count = (select count(rno) from reply where no = #{no})
+	where b.no = #{no}
+	</update>
+	
+	<!-- 첨부파일 총 갯수 -->
+	<update id="fileCount" parameterType="int">
+	update test b
+	set b.file_cnt = (select count(FILE_NO) from file where no = #{no} and DEL_CHK = 'N')
+	where b.no = #{no} 
+	</update>
+	
+	<!-- 첨부파일 작성 -->
+	<insert id="insertFile" parameterType="hashmap">
+        INSERT INTO file
+        (
+            FILE_NO,
+            no,
+            ORG_FILE_NAME,
+            STORED_FILE_NAME,
+            FILE_SIZE
+        )
+        VALUES
+        (
+            #{ FILE_NO},
+            #{ no},
+            #{ ORG_FILE_NAME},
+            #{ STORED_FILE_NAME},
+            #{ FILE_SIZE}
+        )
+	</insert>
+	
+	<!-- 첨부파일 조회 -->
+	<select id="selectFileList" parameterType="int" resultType="hashMap">
+		SELECT FILE_NO,
+			   ORG_FILE_NAME,
+			   ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
+		  FROM file
+		 WHERE no = #{no}
+		   AND DEL_CHK = 'N'
+		   ORDER BY FILE_NO ASC
+	</select>
+	
+	<!-- 첨부파일 다운 -->
+	<select id="selectFileInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			STORED_FILE_NAME,
+			ORG_FILE_NAME
+		FROM FILE
+		WHERE FILE_NO = #{FILE_NO}
+	</select>
+	
+	<update id="updateFile" parameterType="hashMap">
+    	UPDATE file SET
+    	DEL_CHK = 'Y'
+    	WHERE FILE_NO = #{FILE_NO}
+    </update>
+    
+    <!-- 엑셀 다운로드 -->
+    <select id="selectTestList" resultType="com.board.domain.BoardVO" parameterType="com.board.domain.SearchCriteria">
+		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
+        (SELECT * FROM test ORDER BY no asc) A, 
+        (SELECT @ROWNUM := 0 )b
+	
+		 
+		  ORDER BY ROWNUM DESC
+		  
+	</select>
+
+	
+	<!-- 게시물 목록 + 페이징 
+	<select id="listPage" parameterType="hashMap" resultType="com.board.domain.BoardVO">
+	 select
+	  no, title, writer, regDate
+	 from test
+	 order by no desc
+	  limit #{displayPost}, #{postNum}
+	</select>-->
+	
+	 <!--게시물 목록 + 페이징 + 검색 -->
+	<!--<select id="listPageSearch" parameterType="hashMap" resultType="com.board.domain.BoardVO">
+		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
+        (SELECT * FROM test ORDER BY no ASC) A, 
+        (SELECT @ROWNUM := 0 )b
+	 
+	  <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	  ORDER BY ROWNUM DESC
+	  limit #{displayPost}, #{postNum}
+	</select>-->
+	
+	<!-- 게시물 총 갯수 + 검색 적용 
+	<select id="searchCount" parameterType="hashMap" resultType="int">
+	 select count(no) from test  
+	  
+	 <if test='searchType.equals("title")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("content")'>
+	  WHERE content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("title_content")'>
+	  WHERE title LIKE concat('%', #{keyword}, '%') 
+	   or content LIKE concat('%', #{keyword}, '%')
+	 </if>
+	 
+	 <if test='searchType.equals("writer")'>
+	  WHERE writer LIKE concat('%', #{keyword}, '%')
+	 </if>
+ 
+</select>	-->
+	
+
+</mapper>
