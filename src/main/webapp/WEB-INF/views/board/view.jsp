@@ -27,6 +27,7 @@
 			<form name="readForm" role="form" method="post">
 				<input type="hidden" id="HIPW" value="<c:out value="${view.password}"/>" />
 				<input type="hidden" id="no" name="no" value="${view.no}" />
+				<input type="hidden" id="file_cnt" name="file_cnt" value="${view.file_cnt}" />				
 				<input type="hidden" id="bid" name="bid" value="${view.bid}" />
 				<input type="hidden" id="ordered" name="ordered" value="${view.ordered}" />
 				<input type="hidden" id="layer" name="layer" value="${view.layer}" />

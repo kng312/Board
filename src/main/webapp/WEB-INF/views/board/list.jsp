@@ -64,8 +64,8 @@
 													
 										</a>
 										<div class="col-sm-2" style="color: red; float:right;">
+										<input type="hidden" id="file_cnt" name="file_cnt" value="${list.file_cnt}">
 											<c:if test="${list.file_cnt > 0 }">
-											<input type="hidden" id="file_cnt" name="file_cnt" value="${list.file_cnt}">
 												첨부파일(&nbsp;<c:out value="${list.file_cnt}"/>&nbsp;)  
 											</c:if>
 										</div>

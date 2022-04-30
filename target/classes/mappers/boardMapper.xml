@@ -123,6 +123,7 @@
 	where b.no = #{no} 
 	</update>
 	
+	
 	<!-- 첨부파일 작성 -->
 	<insert id="insertFile" parameterType="hashmap">
         INSERT INTO file
@@ -174,6 +175,23 @@
 		SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* FROM
         (SELECT * FROM test ORDER BY no asc) A, 
         (SELECT @ROWNUM := 0 )b
+        
+         <if test="searchType=='title' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='content' and keyword != null and keyword !=''">
+		  WHERE content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='title_content' and keyword != null and keyword !=''">
+		  WHERE title LIKE concat('%', #{keyword}, '%') 
+		   or content LIKE concat('%', #{keyword}, '%')
+		 </if>
+		 
+		 <if test="searchType=='writer' and keyword != null and keyword !=''">
+		  WHERE writer LIKE concat('%', #{keyword}, '%')
+		 </if>
 	
 		 
 		  ORDER BY ROWNUM DESC

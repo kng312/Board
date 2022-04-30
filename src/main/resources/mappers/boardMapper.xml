@@ -123,6 +123,7 @@
 	where b.no = #{no} 
 	</update>
 	
+	
 	<!-- 첨부파일 작성 -->
 	<insert id="insertFile" parameterType="hashmap">
         INSERT INTO file

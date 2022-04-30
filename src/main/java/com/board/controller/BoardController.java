@@ -58,9 +58,9 @@ public class BoardController {
     @RequestMapping(value="/list", method=RequestMethod.GET)
     public void getList(BoardVO vo, Model model,  @ModelAttribute("scri") SearchCriteria scri) throws Exception{
     	
-    	service.fileCount(vo.getFile_cnt());
-    	model.addAttribute("list",service.list(scri));
     	
+    	model.addAttribute("list",service.list(scri));
+    	service.fileCount(vo.getFile_cnt());
     	
     	Page page = new Page();
     	page.setCri(scri);
@@ -81,6 +81,7 @@ public class BoardController {
     	model.addAttribute("write", vo);
     	model.addAttribute("scri", scri);
     	
+    	
 
     	
     }
@@ -92,7 +93,7 @@ public class BoardController {
 										RedirectAttributes rttr, Model model, MultipartHttpServletRequest mpRequest,HttpServletRequest request) throws Exception {
     	logger.info("write");
     	service.write(vo, mpRequest);
-    	service.fileCount(no);
+    	
     	
     	
     	
@@ -103,6 +104,7 @@ public class BoardController {
    	 	rttr.addAttribute("keyword", scri.getKeyword());
    	 
    	 	model.addAttribute("scri", scri);
+   	 	
    	 	
    	 	//이메일 보내기
 	   	 Email email = new Email();
@@ -141,6 +143,9 @@ public class BoardController {
 	    	      System.out.println(e.getMessage());
 	    	      System.out.println(e.getCode());
 	    	    	}
+	     
+   	 service.fileCount(vo.getFile_cnt());
+   	 System.out.println(vo.getFile_cnt());
 	    	  
    
    	 	
@@ -324,10 +329,7 @@ public class BoardController {
 
 	   service.excelDown(vo, response,scri);
 	   
-		rttr.addAttribute("no", vo.getNo());
 		rttr.addAttribute("num", scri.getNum());
-		rttr.addAttribute("bid", vo.getBid());
-		rttr.addAttribute("ordered", vo.getOrdered());
 		rttr.addAttribute("postNum", scri.getPostNum());
 		rttr.addAttribute("searchType", scri.getSearchType());
 		rttr.addAttribute("keyword", scri.getKeyword());

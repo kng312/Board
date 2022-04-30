@@ -49,11 +49,13 @@ public class boardServiceImpl implements boardService{
 		if(vo.getNo() == 0) 
 		{
 			 dao.write(vo);
+			 
 		}
 		else 
 		{
 			dao.replyShape(vo);
 			 dao.replyWrite(vo);
+			
 		}
 		
 		List<Map<String,Object>> list = fileUtils.parseInsertFileInfo(vo, mpRequest); 
@@ -62,6 +64,8 @@ public class boardServiceImpl implements boardService{
 		{ 
 			dao.insertFile(list.get(i)); 
 		}
+		
+		
 		
 		
 		

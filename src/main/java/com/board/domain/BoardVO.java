@@ -22,9 +22,27 @@ public class BoardVO {
 	
 	private String Email;
 	
+	private String searchType = "";
+	private String keyword = "";
 	
 	
 	
+	
+	public void setSearchType(String searchType) {
+		 this.searchType = searchType;  
+		}
+
+	public String getSearchType() {
+		 return searchType;
+		} 
+
+	public void setKeyword(String keyword) {
+		 this.keyword = keyword;  
+		} 
+
+	public String getKeyword() {
+		 return keyword;
+		}
 	
 	public String getEmail() {
 		return Email;
@@ -111,14 +129,16 @@ public class BoardVO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	@Override
 	public String toString() {
 		return "BoardVO [rownum=" + rownum + ", no=" + no + ", title=" + title + ", content=" + content + ", writer="
 				+ writer + ", regDate=" + regDate + ", password=" + password + ", bid=" + bid + ", ordered=" + ordered
 				+ ", layer=" + layer + ", reply_count=" + reply_count + ", file_cnt=" + file_cnt + ", replyDeleteC="
-				+ replyDeleteC + "]";
+				+ replyDeleteC + ", Email=" + Email + ", searchType=" + searchType + ", keyword=" + keyword + "]";
 	}
 
+	
 
 	
 	
